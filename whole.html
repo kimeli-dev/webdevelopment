@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio with Parallax</title>
+    <link href="https://fonts.googleapis.com/css2?family=Soofia&family=Audiowide&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Video Background */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            background-color: rgba(0, 0, 139, 0.6);
+            color: white;
+            padding: 15px;
+            z-index: 10;
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+
+        h1 {
+            font-family: 'Soofia', cursive;
+            font-size: 48px;
+            text-align: center;
+            text-shadow: 0 0 15px rgba(255, 0, 255, 1), 0 0 30px rgba(255, 0, 255, 1);
+            animation: floatingText 2s infinite;
+        }
+
+        /* Floating Text Animation */
+        @keyframes floatingText {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        nav ul {
+            list-style-type: none;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+
+        section {
+            padding: 100px 50px 50px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s ease, transform 1s ease;
+            min-height: 100vh;
+        }
+
+        section.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+            margin: 20px;
+            width: 250px;
+            display: inline-block;
+            vertical-align: top;
+            background-color: rgba(255, 255, 255, 0.9);
+            transform: perspective(1000px) rotateY(0deg);
+            opacity: 0.8;
+        }
+
+        .card:hover {
+            transform: perspective(1000px) rotateY(10deg);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+            opacity: 1;
+        }
+
+        .card-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .card .frameworks {
+            display: none;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .card:hover .frameworks {
+            display: block;
+        }
+
+        /* Toggle Button */
+        .toggle-wrapper {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .toggle-button {
+            width: 60px;
+            height: 30px;
+            background: #444;
+            border-radius: 50px;
+            position: relative;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            padding: 5px;
+        }
+
+        .toggle-indicator {
+            width: 24px;
+            height: 24px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body.dark-mode .toggle-indicator {
+            transform: translateX(30px);
+        }
+
+        body.dark-mode {
+            background-color: #121212;
+            color: white;
+        }
+
+        body.dark-mode .card {
+            background-color: #1e1e1e;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+            }
+        }
+
+        /* Testimonial Section */
+        .testimonials {
+            font-family: 'Audiowide', sans-serif;
+            font-size: 18px;
+            font-style: italic;
+            color: #ffffff;
+            margin-top: 50px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+
+        .testimonials:hover {
+            opacity: 1;
+        }
+
+        /* 3D Transform for Clients */
+        .client-card {
+            width: 300px;
+            height: 200px;
+            margin: 20px;
+            perspective: 1000px;
+            transition: transform 0.6s ease;
+        }
+
+        .client-card:hover .client-image {
+            transform: rotateY(15deg) rotateX(15deg);
+        }
+
+        .client-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Video Background -->
+    <video autoplay muted loop class="video-background">
+        <source src="solomon.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- Header -->
+    <header>
+        <h1>My Portfolio</h1>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#catalogue">Catalogue</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Theme Toggle -->
+    <div class="toggle-wrapper">
+        <div class="toggle-button" id="theme-toggle">
+            <div class="toggle-indicator" id="toggle-icon">
+                <i class="fas fa-sun"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sections -->
+    <main>
+        <section id="about">
+            <h2>About Me</h2>
+            <div class="card-container">
+                <div class="card">
+                    <p>I’m a passionate web developer focused on creating modern, responsive websites. I strive to make a lasting impact with my work.</p>
+                </div>
+            </div>
+            
+            <!-- Technologies I Know -->
+            <h3>Technologies I Know</h3>
+            <div class="technologies">
+                <h4>Ordered List (Key Skills)</h4>
+                <ol>
+                    <li>Git</li>
+                    <li>GitHub</li>
+                    <li>HTML</li>
+                    <li>CSS</li>
+                    <li>VSCode</li>
+                </ol>
+
+                <h4>Unordered List (Other Tools)</h4>
+                <ul>
+                    <li>Node.js</li>
+                    <li>React</li>
+                    <li>MongoDB</li>
+                    <li>Docker</li>
+                    <li>Figma</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="catalogue">
+            <h2>Catalogue of My Work</h2>
+            <div class="card-container" id="catalogue-cards">
+                <!-- Example Catalogue Item -->
+                <div class="card">
+                    <h3>Client 1: E-commerce Store</h3>
+                    <p><strong>Technologies:</strong> HTML, CSS, JavaScript, Node.js</p>
+                    <div class="frameworks">React, Express.js, MongoDB</div>
+                </div>
+                <div class="card">
+                    <h3>Client 2: Blogging Platform</h3>
+                    <p><strong>Technologies:</strong> React, Firebase</p>
+                    <div class="frameworks">Next.js, Firebase Hosting</div>
+                </div>
+                <!-- More items can be added here -->
+            </div>
+        </section>
+
+        <section id="contact">
+            <h2>Contact</h2>
+            <div class="card">
+                <p>Get in touch via email@example.com</p>
+            </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section id="testimonials">
+            <div class="testimonials">
+                <p>"Amazing work! The e-commerce site was fast and intuitive. Highly recommend!"</p>
+                <p>- Client A</p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Section Reveal on Load
+        window.addEventListener("load", () => {
+            document.querySelectorAll("section").forEach(section => {
+                section.classList.add("show");
+            });
+        });
+
+        // Scroll Effect on Header
+        window.addEventListener("scroll", () => {
+            const header = document.querySelector("header");
+            const scrollPosition = window.scrollY;
+            if (scrollPosition > 50) {
+                header.style.backgroundColor = "rgba(0, 0, 139, 0.3)";
+            } else {
+                header.style.backgroundColor = "rgba(0, 0, 139, 0.6)";
+            }
+        });
+
+        // Theme Toggle
+        document.getElementById("theme-toggle").addEventListener("click", () => {
+            document.body.classList.toggle("dark-mode");
+            const icon = document.getElementById("toggle-icon");
+            if (document.body.classList.contains("dark-mode")) {
+                icon.innerHTML = '<i class="fas fa-moon"></i>';
+            } else {
+                icon.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+        });
+    </script>
+
+</body>
+</html>
